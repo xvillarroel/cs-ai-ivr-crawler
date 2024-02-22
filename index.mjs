@@ -89,7 +89,7 @@ export const handler = async (event, context) => {
         }
 
     try {
-        rows[rowIndex].set('AP Contact Number', (`'${phoneNumber}`));
+        rows[rowIndex].set('AP Contact Number', (`'+${phoneNumber.replace('+','')}`));
         rows[rowIndex].set('Crawled', true);
         rows[rowIndex].set('Message Parsed', message);
         await rows[rowIndex].save();
