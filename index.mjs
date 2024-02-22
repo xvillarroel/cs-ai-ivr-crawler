@@ -97,7 +97,9 @@ export const handler = async (event, context) => {
         console.error(`ERROR: ${error.toString()}`);
     }
 
-    response = await assembleResponse(200,`Message written in row ${rowIndex}`); //if it's not a POST 
+    let relativeIndex = rowIndex + 2;
+
+    response = await assembleResponse(200,`Message written in row ${relativeIndex}`); //if it's not a POST 
     console.log(JSON.stringify(response, null, 2))
     return response;
 
