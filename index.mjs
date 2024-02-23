@@ -2,6 +2,7 @@
 
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
+import axios from 'axios';
 
 const globals = {
     SERVICEACCOUNTAUTH: new JWT({
@@ -127,7 +128,7 @@ const getCategoryAI = async (message) => {
         response = await makeCall(
             `${globals.GPT_URL}/chat/completions`,
             {
-                'Authorization': process.env.GPT_KEY,
+                'Authorization': 'Bearer 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',
                 'Content-Type': 'application/json'
             },
             'json',
@@ -139,7 +140,8 @@ const getCategoryAI = async (message) => {
         console.log(error.message);
     }
 
-    return response.choices.message.content
+    console.log(JSON.stringify(response));
+    return response.choices[0].message.content;
 
 };
 
