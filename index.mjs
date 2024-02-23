@@ -82,7 +82,7 @@ const getCategoryAI = async (message) => {
     
     [TASK]
     When calling, you got the following response:
-    MESSAGE: "Crawling  14154170824 (CAb9d877483d0489bfb7837679150d85b5). Please wait..."
+    MESSAGE: "${message}"
     
     Now, you have to decide if this is an IVR message, a Human message or the call just Failed. 
     A- If it's an IVR, then you have to decide what kind of IVR it is. 
@@ -195,6 +195,7 @@ export const handler = async (event, context) => {
         }
 
     let category = await getCategoryAI(message);
+    console.log(`Category = ${category}`);
 
     try {
         rows[rowIndex].set('AP Contact Number', (`'+${phoneNumber.replace('+','')}`));
