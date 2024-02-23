@@ -82,7 +82,7 @@ const getCategoryAI = async (message) => {
     
     [TASK]
     When calling, you got the following response:
-    MESSAGE: "${message}"
+    MESSAGE: "${message} "
     
     Now, you have to decide if this is an IVR message, a Human message or the call just Failed. 
     A- If it's an IVR, then you have to decide what kind of IVR it is. 
