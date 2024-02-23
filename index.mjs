@@ -128,7 +128,7 @@ const getCategoryAI = async (message) => {
         response = await makeCall(
             `${globals.GPT_URL}/chat/completions`,
             {
-                'Authorization': 'Bearer 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',
+                'Authorization': process.env.GPT_KEY,
                 'Content-Type': 'application/json'
             },
             'json',
