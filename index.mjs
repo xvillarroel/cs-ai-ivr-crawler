@@ -10,10 +10,43 @@ const globals = {
         scopes: ['https://www.googleapis.com/auth/spreadsheets']
     }),
     ROWOFFSET: 1,
+    GPT_URL: 'https://api.openai.com/v1',
+    GPT_MODEL: `gpt-4-0125-preview`, //https://platform.openai.com/docs/models/continuous-model-upgrades
 
 };
 
 ////////////////////////////////////////////////////////////////
+
+const makeCall = async (url, headers = {}, responseType = 'json', method = 'GET', payload = null, timeout = 30000, includeHeaders = false) => {
+    const response = await axios({
+            url: url,
+            method: method,
+            headers: headers,
+            data: payload,
+            responseType: responseType,
+            timeout: timeout,
+        }).catch(err => {
+            return {
+                data: {
+                    error: err.message,
+                    status: err.status,
+                    request: {
+                        action: `${method} ${url}`,
+                        headers: headers,
+                        body: payload
+                    },
+                    response: err?.response?.data,
+                }
+            }
+        });
+
+    return includeHeaders 
+        ? {
+            headers: response.headers,
+            body   : response.data
+        }
+        : response.data;
+};
 
 const assembleResponse = async (status, message) => {
     let object = {
@@ -29,14 +62,85 @@ function getRowIndex(matrix, phone) {
       phone = '+' + phone;
     }
     return matrix.findIndex(row => row[3].replace(/ /g,'') === phone);
-  }
+}
 
-const convertToMatrix = (row) => {
+const convertToMatrix = (text) => {
     return row.map(
         index => { let array = Object.values(index)[2]
             return array; 
         }  
     );
+};
+
+const getCategoryAI = async (message) => {
+
+    let response;
+    let prompt = `
+    [ROLE]
+    You are an accounts payable agent who is calling a phone number that was given to you. 
+    
+    [TASK]
+    When calling, you got the following response:
+    MESSAGE: "Crawling  14154170824 (CAb9d877483d0489bfb7837679150d85b5). Please wait..."
+    
+    Now, you have to decide if this is an IVR message, a Human message or the call just Failed. 
+    A- If it's an IVR, then you have to decide what kind of IVR it is. 
+        1. If it has a message that tells you to wait so they can transfer the call or communicate with you with a human, then respond (IVR) Just wait.
+        2. If it has a message that tells you "Please leave a message after the tone" (or something similar), then respond (IVR) Just wait.
+        3. If it is one of those IVRs that has menus like "press 1 for X and press 2 for Y", then respond (IVR) Press buttons. 
+        4. If you can categorize the message in two of the categories, choose the upper one. For example, if the message contains  "press 1 for X and press 2 for Y", but in the end, it says "if you want to talk to an operator, please wait", then you must respond with option 1 "(IVR) Just wait.".
+    
+    B- If it is not an IVR, it is because it is a Human. In such a case, respond with (PASS) Human.
+    
+    C- If the call Failed, you must categorize what type of failure based on the message. We have three categories:
+        1. If you hear a message that says something like "This call cannot be completed as you dialed it" or something similar, then respond with "(FAIL) Cannot be completed".
+        2. If the message is either blank or says something like "call disconnected", or the message looks like "Crawling <a bunch of numbers>. Please wait...", then it is a "(FAIL) No one answers".
+
+    D- If you cannot categorize the message into the categories that I explained, just respond "Other". 
+    
+    [FORMAT]
+    You can only respond with one of the following phrases: 
+    
+    - (PASS) Human
+    - (IVR) Just wait
+    - (IVR) Leave a message
+    - (IVR) Press buttons
+    - (FAIL) Cannot be completed
+    - (FAIL) No one answers
+    - Other
+    `;
+
+    let body = {
+                "model": globals.GPT_MODEL,
+                "messages": [{
+                    "role": "system",
+                    "content": prompt
+                }],
+                "temperature": 0.1,
+                "max_tokens": 500,
+                "top_p": 1,
+                "frequency_penalty": 0,
+                "presence_penalty": 0
+                };
+
+    try {
+        response = await makeCall(
+            `${globals.GPT_URL}/chat/completions`,
+            {
+                'Authorization': process.env.GPT_KEY,
+                'Content-Type': 'application/json'
+            },
+            'json',
+            'POST',
+            body,
+            60000
+        );
+    } catch (error) {
+        console.log(error.message);
+    }
+
+    return response.choices.message.content
+
 };
 
 export const handler = async (event, context) => {
@@ -88,10 +192,13 @@ export const handler = async (event, context) => {
             return response;
         }
 
+    let category = await getCategoryAI(message);
+
     try {
         rows[rowIndex].set('AP Contact Number', (`'+${phoneNumber.replace('+','')}`));
         rows[rowIndex].set('Crawled', true);
         rows[rowIndex].set('Message Parsed', message);
+        rows[rowIndex].set('Category', category);
         await rows[rowIndex].save();
     } catch (error) {
         console.error(`ERROR: ${error.toString()}`);
