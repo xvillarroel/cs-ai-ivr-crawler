@@ -59,6 +59,7 @@ const assembleResponse = async (status, message) => {
 };
 
 function getRowIndex(matrix, phone) {
+    console.log(matrix.toString());
     if (phone.indexOf('+') === -1) {
       phone = '+' + phone;
     }
@@ -159,11 +160,9 @@ export const handler = async (event, context) => {
         } 
 
         if (!body.phone_number) {
-
             response = await assembleResponse(400,`Variable 'phone_number' is missing. `); //if it's not a POST 
             console.log(JSON.stringify(response),null,2);
             return response;
-
         } 
 
     let sheetid = body.sheetid;
