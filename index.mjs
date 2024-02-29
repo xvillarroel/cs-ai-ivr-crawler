@@ -59,7 +59,7 @@ const assembleResponse = async (status, message) => {
 };
 
 function getRowIndex(matrix, phone) {
-    console.log(matrix.toString());
+    console.log(matrix);
     if (phone.indexOf('+') === -1) {
       phone = '+' + phone;
     }
@@ -148,8 +148,9 @@ const getCategoryAI = async (message) => {
 
 export const handler = async (event, context) => {
 
-    console.log (`****************\n Starting Function - V1 (PROD VERSION) \n****************`)
-    let response; 
+    console.log('*********** LOADING V1 ***********')
+    console.log(JSON.stringify(event,null,2));
+    console.log('*************************************')
 
     let body = JSON.parse(event.body);
 
