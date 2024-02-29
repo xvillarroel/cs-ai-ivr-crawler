@@ -59,11 +59,19 @@ const assembleResponse = async (status, message) => {
 };
 
 function getRowIndex(matrix, phone) {
-    console.log(matrix);
+    console.log(`INFORMATION: matrix[0][3].toString() = ${matrix[0][3].toString()}, 
+    phone = ${phone}, 
+    phone.indexOf('+') === -1 = ${phone.indexOf('+') === -1}, 
+    row[3].replace(/ /g,'') === phone = ${matrix[0][3].replace(/ /g,'') === phone}`)
+
     if (phone.indexOf('+') === -1) {
       phone = '+' + phone;
     }
-    return matrix.findIndex(row => row[3].replace(/ /g,'') === phone);
+    return matrix.findIndex((row, index) => { 
+        const cleanedRowPhone = row[3].replace(/ /g, '');
+        console.log(`Comparing: cleanedRowPhone = ${cleanedRowPhone}, phone = ${phone}, index = ${index}`);
+        return cleanedRowPhone === phone;
+    });
 }
 
 const convertToMatrix = (row) => {
@@ -148,6 +156,8 @@ const getCategoryAI = async (message) => {
 
 export const handler = async (event, context) => {
 
+    let response;
+
     console.log('*********** LOADING V1 ***********')
     console.log(JSON.stringify(event,null,2));
     console.log('*************************************')
@@ -188,7 +198,8 @@ export const handler = async (event, context) => {
     let rawMatrix = convertToMatrix(rows); 
     let rowIndex = getRowIndex(rawMatrix, phoneNumber)
 
-        if (!rowIndex){
+        if (rowIndex < 0){ 
+            console.log(`rowIndex is < 0, so it does not exist in the list of calls.`)
             response = await assembleResponse(400,`The number ${phoneNumber} cannot be found in the "${tabName}" sheet.`); 
             console.log(JSON.stringify(response),null,2);
             return response;
@@ -215,53 +226,48 @@ export const handler = async (event, context) => {
 
 };
 
-// (async () => {
-//     await handler({
-//                     version: '2.0',
-//                     routeKey: '$default',
-//                     rawPath: '/',
-//                     rawQueryString: '',
-//                     headers: {
-//                     'content-length': '107',
-//                     'x-amzn-tls-version': 'TLSv1.2',
-//                     'x-forwarded-proto': 'https',
-//                     'postman-token': 'cd2f5956-44b3-4298-88e9-d10dfba4bc74',
-//                     'x-forwarded-port': '443',
-//                     'x-forwarded-for': '181.43.127.230',
-//                     accept: '*/*',
-//                     'x-amzn-tls-cipher-suite': 'ECDHE-RSA-AES128-GCM-SHA256',
-//                     'x-amzn-trace-id': 'Root=1-65a09bf8-79d301b26d42233e44bb8237',
-//                     host: 'ytzivrzj76ejwc2vdbnzwladdm0nvubi.lambda-url.us-east-1.on.aws',
-//                     'content-type': 'application/json',
-//                     'accept-encoding': 'gzip, deflate, br',
-//                     'user-agent': 'PostmanRuntime/7.36.0'
-//                     },
-//                     requestContext: {
-//                     accountId: 'anonymous',
-//                     apiId: 'ytzivrzj76ejwc2vdbnzwladdm0nvubi',
-//                     domainName: 'ytzivrzj76ejwc2vdbnzwladdm0nvubi.lambda-url.us-east-1.on.aws',
-//                     domainPrefix: 'ytzivrzj76ejwc2vdbnzwladdm0nvubi',
-//                     http: {
-//                         method: 'POST',
-//                         path: '/',
-//                         protocol: 'HTTP/1.1',
-//                         sourceIp: '181.43.127.230',
-//                         userAgent: 'PostmanRuntime/7.36.0'
-//                     },
-//                     requestId: '9c8c29ec-37aa-4d1e-bc32-fcd3abf82fdf',
-//                     routeKey: '$default',
-//                     stage: '$default',
-//                     time: '12/Jan/2024:01:55:04 +0000',
-//                     timeEpoch: 1705024504027
-//                     },
-//                     body: '{\r\n' +
-//                     '    "sheetid": "13rBFlGSpmXah2pzvUjYDm6xsv5tDhGFBu1q2ImvQQVk",\r\n' +
-//                     '    "message": "We are sorry, your call cannot be completed as dialed. Please try again. ",\r\n' +
-//                     '    "phone_number": "+14078363111"\r\n' +
-//                     '}',
-//                     isBase64Encoded: false
-//                     })
-// })() 
+(async () => {
+    await handler({
+        "version": "2.0",
+        "routeKey": "$default",
+        "rawPath": "/",
+        "rawQueryString": "",
+        "headers": {
+            "content-length": "202",
+            "x-amzn-tls-cipher-suite": "ECDHE-RSA-AES128-GCM-SHA256",
+            "x-amzn-tls-version": "TLSv1.2",
+            "x-amzn-trace-id": "Root=1-65e0e876-59fd97806f9808c960f138b0",
+            "x-forwarded-proto": "https",
+            "host": "rggb625ecnpsneg42m62hki3wq0lsmlh.lambda-url.us-east-1.on.aws",
+            "x-forwarded-port": "443",
+            "content-type": "application/json",
+            "x-forwarded-for": "2600:1900:2000:a3::1:1700",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "accept": "application/json, text/plain, */*",
+            "user-agent": "axios/1.6.7"
+        },
+        "requestContext": {
+            "accountId": "anonymous",
+            "apiId": "rggb625ecnpsneg42m62hki3wq0lsmlh",
+            "domainName": "rggb625ecnpsneg42m62hki3wq0lsmlh.lambda-url.us-east-1.on.aws",
+            "domainPrefix": "rggb625ecnpsneg42m62hki3wq0lsmlh",
+            "http": {
+                "method": "POST",
+                "path": "/",
+                "protocol": "HTTP/1.1",
+                "sourceIp": "2600:1900:2000:a3::1:1700",
+                "userAgent": "axios/1.6.7"
+            },
+            "requestId": "58d09a97-5a42-4333-a7dc-509c0fcd5767",
+            "routeKey": "$default",
+            "stage": "$default",
+            "time": "29/Feb/2024:20:26:30 +0000",
+            "timeEpoch": 1709238390676
+        },
+        "body": "{\"sheetid\":\"13rBFlGSpmXah2pzvUjYDm6xsv5tDhGFBu1q2ImvQQVk\",\"tab\":\"Raw\",\"message\":\"(+14077779910) Hello this is Xavier What can I do for you?  Hello Hello I cannot hear you\",\"phone_number\":\"+14077779910\"}",
+        "isBase64Encoded": false
+    })
+})() 
 
 
 
