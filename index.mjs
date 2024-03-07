@@ -11,7 +11,7 @@ const globals = {
         scopes: ['https://www.googleapis.com/auth/spreadsheets']
     }),
     ROWOFFSET: 1,
-    GPT_URL: 'https://api.openai.com/v1',
+    GPT_URL: 'https://ucifn4aomvs4e73k74czkybtiq0urbpr.lambda-url.us-east-1.on.aws',//'https://api.openai.com/v1/chat/completions'
     GPT_MODEL: `gpt-4-0125-preview`, //https://platform.openai.com/docs/models/continuous-model-upgrades
 
 };
@@ -136,7 +136,7 @@ const getCategoryAI = async (message) => {
 
     try {
         response = await makeCall(
-            `${globals.GPT_URL}/chat/completions`,
+            globals.GPT_URL,
             {
                 'Authorization': process.env.GPT_KEY,
                 'Content-Type': 'application/json'
