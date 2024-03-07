@@ -58,17 +58,18 @@ const assembleResponse = async (status, message) => {
     return object;
 };
 
-function getRowIndex(matrix, phone) {
-    console.log(`INFORMATION: matrix[0][3].toString() = ${matrix[0][3].toString()}, 
+function getRowIndex(matrix, phone, columnAPContactNumber) {
+    console.log(`INFORMATION: matrix[0][${columnAPContactNumber}].toString() = ${matrix[0][columnAPContactNumber].toString()}, 
     phone = ${phone}, 
     phone.indexOf('+') === -1 = ${phone.indexOf('+') === -1}, 
-    row[3].replace(/ /g,'') === phone = ${matrix[0][3].replace(/ /g,'') === phone}`)
+    row[3].replace(/ /g,'') === phone = ${matrix[0][columnAPContactNumber].replace(/ /g,'') === phone}`)
 
     if (phone.indexOf('+') === -1) {
       phone = '+' + phone;
     }
+
     return matrix.findIndex((row, index) => { 
-        const cleanedRowPhone = row[3].replace(/ /g, '');
+        const cleanedRowPhone = row[columnAPContactNumber].replace(/ /g, '');
         console.log(`Comparing: cleanedRowPhone = ${cleanedRowPhone}, phone = ${phone}, index = ${index}`);
         return cleanedRowPhone === phone;
     });
@@ -196,7 +197,16 @@ export const handler = async (event, context) => {
     await activeSheet.loadCells('A1:Z');
     let rows = await activeSheet.getRows();
     let rawMatrix = convertToMatrix(rows); 
-    let rowIndex = getRowIndex(rawMatrix, phoneNumber)
+
+    let headersArray = activeSheet.headerValues;
+    
+    let columnTxNumber          = getColumnIndex(headersArray, 'Tx Number');
+    let columnAPContactNumber   = getColumnIndex(headersArray, 'AP Contact Number');
+    let columnCalled            = getColumnIndex(headersArray, 'Called');
+    let columnCompanyName       = getColumnIndex(headersArray, 'Company Name');
+    let columnShift             = getColumnIndex(headersArray, 'Shift');
+
+    let rowIndex = getRowIndex(rawMatrix, phoneNumber, columnAPContactNumber)
 
         if (rowIndex < 0){ 
             console.log(`rowIndex is < 0, so it does not exist in the list of calls.`)
