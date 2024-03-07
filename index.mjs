@@ -49,11 +49,6 @@ const makeCall = async (url, headers = {}, responseType = 'json', method = 'GET'
         : response.data;
 };
 
-
-const getColumnIndex = (array, searchString) => {
-    return array.indexOf(searchString);
-}
-
 const assembleResponse = async (status, message) => {
     let object = {
         statusCode: status,
@@ -205,11 +200,11 @@ export const handler = async (event, context) => {
 
     let headersArray = activeSheet.headerValues;
     
-    let columnTxNumber          = getColumnIndex(headersArray, 'Tx Number');
-    let columnAPContactNumber   = getColumnIndex(headersArray, 'AP Contact Number');
-    let columnCalled            = getColumnIndex(headersArray, 'Called');
-    let columnCompanyName       = getColumnIndex(headersArray, 'Company Name');
-    let columnShift             = getColumnIndex(headersArray, 'Shift');
+    let columnTxNumber          = headersArray.indexOf('Tx Number'); 
+    let columnAPContactNumber   = headersArray.indexOf('AP Contact Number');
+    let columnCalled            = headersArray.indexOf('Called');
+    let columnCompanyName       = headersArray.indexOf('Company Name');
+    let columnShift             = headersArray.indexOf('Shift');
 
     let rowIndex = getRowIndex(rawMatrix, phoneNumber, columnAPContactNumber)
 
