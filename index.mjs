@@ -49,6 +49,11 @@ const makeCall = async (url, headers = {}, responseType = 'json', method = 'GET'
         : response.data;
 };
 
+
+const getColumnIndex = (array, searchString) => {
+    return array.indexOf(searchString);
+}
+
 const assembleResponse = async (status, message) => {
     let object = {
         statusCode: status,
