@@ -226,48 +226,48 @@ export const handler = async (event, context) => {
 
 };
 
-(async () => {
-    await handler({
-        "version": "2.0",
-        "routeKey": "$default",
-        "rawPath": "/",
-        "rawQueryString": "",
-        "headers": {
-            "content-length": "202",
-            "x-amzn-tls-cipher-suite": "ECDHE-RSA-AES128-GCM-SHA256",
-            "x-amzn-tls-version": "TLSv1.2",
-            "x-amzn-trace-id": "Root=1-65e0e876-59fd97806f9808c960f138b0",
-            "x-forwarded-proto": "https",
-            "host": "rggb625ecnpsneg42m62hki3wq0lsmlh.lambda-url.us-east-1.on.aws",
-            "x-forwarded-port": "443",
-            "content-type": "application/json",
-            "x-forwarded-for": "2600:1900:2000:a3::1:1700",
-            "accept-encoding": "gzip, compress, deflate, br",
-            "accept": "application/json, text/plain, */*",
-            "user-agent": "axios/1.6.7"
-        },
-        "requestContext": {
-            "accountId": "anonymous",
-            "apiId": "rggb625ecnpsneg42m62hki3wq0lsmlh",
-            "domainName": "rggb625ecnpsneg42m62hki3wq0lsmlh.lambda-url.us-east-1.on.aws",
-            "domainPrefix": "rggb625ecnpsneg42m62hki3wq0lsmlh",
-            "http": {
-                "method": "POST",
-                "path": "/",
-                "protocol": "HTTP/1.1",
-                "sourceIp": "2600:1900:2000:a3::1:1700",
-                "userAgent": "axios/1.6.7"
-            },
-            "requestId": "58d09a97-5a42-4333-a7dc-509c0fcd5767",
-            "routeKey": "$default",
-            "stage": "$default",
-            "time": "29/Feb/2024:20:26:30 +0000",
-            "timeEpoch": 1709238390676
-        },
-        "body": "{\"sheetid\":\"13rBFlGSpmXah2pzvUjYDm6xsv5tDhGFBu1q2ImvQQVk\",\"tab\":\"Raw\",\"message\":\"(+14077779910) Hello this is Xavier What can I do for you?  Hello Hello I cannot hear you\",\"phone_number\":\"+14077779910\"}",
-        "isBase64Encoded": false
-    })
-})() 
+// (async () => {
+//     await handler({
+//         "version": "2.0",
+//         "routeKey": "$default",
+//         "rawPath": "/",
+//         "rawQueryString": "",
+//         "headers": {
+//             "content-length": "202",
+//             "x-amzn-tls-cipher-suite": "ECDHE-RSA-AES128-GCM-SHA256",
+//             "x-amzn-tls-version": "TLSv1.2",
+//             "x-amzn-trace-id": "Root=1-65e0e876-59fd97806f9808c960f138b0",
+//             "x-forwarded-proto": "https",
+//             "host": "rggb625ecnpsneg42m62hki3wq0lsmlh.lambda-url.us-east-1.on.aws",
+//             "x-forwarded-port": "443",
+//             "content-type": "application/json",
+//             "x-forwarded-for": "2600:1900:2000:a3::1:1700",
+//             "accept-encoding": "gzip, compress, deflate, br",
+//             "accept": "application/json, text/plain, */*",
+//             "user-agent": "axios/1.6.7"
+//         },
+//         "requestContext": {
+//             "accountId": "anonymous",
+//             "apiId": "rggb625ecnpsneg42m62hki3wq0lsmlh",
+//             "domainName": "rggb625ecnpsneg42m62hki3wq0lsmlh.lambda-url.us-east-1.on.aws",
+//             "domainPrefix": "rggb625ecnpsneg42m62hki3wq0lsmlh",
+//             "http": {
+//                 "method": "POST",
+//                 "path": "/",
+//                 "protocol": "HTTP/1.1",
+//                 "sourceIp": "2600:1900:2000:a3::1:1700",
+//                 "userAgent": "axios/1.6.7"
+//             },
+//             "requestId": "58d09a97-5a42-4333-a7dc-509c0fcd5767",
+//             "routeKey": "$default",
+//             "stage": "$default",
+//             "time": "29/Feb/2024:20:26:30 +0000",
+//             "timeEpoch": 1709238390676
+//         },
+//         "body": "{\"sheetid\":\"13rBFlGSpmXah2pzvUjYDm6xsv5tDhGFBu1q2ImvQQVk\",\"tab\":\"Raw\",\"message\":\"(+14077779910) Hello this is Xavier What can I do for you?  Hello Hello I cannot hear you\",\"phone_number\":\"+14077779910\"}",
+//         "isBase64Encoded": false
+//     })
+// })() 
 
 
 
