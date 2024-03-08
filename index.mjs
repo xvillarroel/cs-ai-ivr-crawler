@@ -49,6 +49,19 @@ const makeCall = async (url, headers = {}, responseType = 'json', method = 'GET'
         : response.data;
 };
 
+function getCurrentTime() {
+    const now = new Date(); // Create a new Date object for the current date and time
+    const year = now.getFullYear(); // Extract the year
+    const month = now.getMonth() + 1; // Extract the month (January is 0, hence add 1 to make it human-readable)
+    const day = now.getDate(); // Extract the day of the month
+    const hours = now.getHours(); // Extract the hours
+    const minutes = now.getMinutes(); // Extract the minutes
+    const seconds = now.getSeconds(); // Extract the seconds
+
+    // Return the date and time in string format
+    return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
+}
+
 const assembleResponse = async (status, message) => {
     let object = {
         statusCode: status,
@@ -59,10 +72,6 @@ const assembleResponse = async (status, message) => {
 };
 
 function getRowIndex(matrix, phone, columnAPContactNumber) {
-    console.log(`INFORMATION: matrix[0][${columnAPContactNumber}].toString() = ${matrix[0][columnAPContactNumber].toString()}, 
-    phone = ${phone}, 
-    phone.indexOf('+') === -1 = ${phone.indexOf('+') === -1}, 
-    row[3].replace(/ /g,'') === phone = ${matrix[0][columnAPContactNumber].replace(/ /g,'') === phone}`)
 
     if (phone.indexOf('+') === -1) {
       phone = '+' + phone;
@@ -70,7 +79,6 @@ function getRowIndex(matrix, phone, columnAPContactNumber) {
 
     return matrix.findIndex((row, index) => { 
         const cleanedRowPhone = row[columnAPContactNumber].replace(/ /g, '');
-        console.log(`Comparing: cleanedRowPhone = ${cleanedRowPhone}, phone = ${phone}, index = ${index}`);
         return cleanedRowPhone === phone;
     });
 }
@@ -199,12 +207,12 @@ export const handler = async (event, context) => {
     let rawMatrix = convertToMatrix(rows); 
 
     let headersArray = activeSheet.headerValues;
-    
-    let columnTxNumber          = headersArray.indexOf('Tx Number'); 
-    let columnAPContactNumber   = headersArray.indexOf('AP Contact Number');
-    let columnCalled            = headersArray.indexOf('Called');
+
     let columnCompanyName       = headersArray.indexOf('Company Name');
+    let columnAPContactNumber   = headersArray.indexOf('AP Contact Number');
     let columnShift             = headersArray.indexOf('Shift');
+    let columnCrawled           = headersArray.indexOf('Crawled');
+    let columnLastCrawled       = headersArray.indexOf('Last Crawled');
 
     let rowIndex = getRowIndex(rawMatrix, phoneNumber, columnAPContactNumber)
 
@@ -223,9 +231,10 @@ export const handler = async (event, context) => {
         rows[rowIndex].set('Crawled', true);
         rows[rowIndex].set('Message Parsed', message);
         rows[rowIndex].set('Category', category);
+        rows[rowIndex].set('Last Crawled', getCurrentTime());
         await rows[rowIndex].save();
     } catch (error) {
-        console.error(`ERROR: ${error.toString()}`);
+        console.error(`ERROR (227): ${error.toString()}`);
     }
 
     let relativeIndex = rowIndex + 2;
@@ -237,6 +246,14 @@ export const handler = async (event, context) => {
 };
 
 // (async () => {
+
+//     let body = JSON.stringify({
+//         sheetid: "13rBFlGSpmXah2pzvUjYDm6xsv5tDhGFBu1q2ImvQQVk",
+//         tab: "Crawl",
+//         phone_number: '+14078363111',
+//         message: "(+14078363111) Welcome to Orange Countys 311 call center If this is an emergency Please hang up and dial 911 but Im off information on Al s been yall the promo L numeral dose If you would like to submit your request electronically or chat with a representative visit 3012 website at wwwo C FL dot net forward slash 311 your call is being recorded and compliance with public records Los your communication with Orange County may be disclosed to the public and media at anytime  Press 3 for information regarding the emergency rental assistance program for information about animal services spay or neuter program please press 4 press 5 for information about researching code enforcement violations If you are calling for information regarding the people with special needs program please press 6 You may buy passes greeting it  anytime"
+//     });
+
 //     await handler({
 //         "version": "2.0",
 //         "routeKey": "$default",
@@ -274,7 +291,7 @@ export const handler = async (event, context) => {
 //             "time": "29/Feb/2024:20:26:30 +0000",
 //             "timeEpoch": 1709238390676
 //         },
-//         "body": "{\"sheetid\":\"13rBFlGSpmXah2pzvUjYDm6xsv5tDhGFBu1q2ImvQQVk\",\"tab\":\"Raw\",\"message\":\"(+14077779910) Hello this is Xavier What can I do for you?  Hello Hello I cannot hear you\",\"phone_number\":\"+14077779910\"}",
+//         "body": body,
 //         "isBase64Encoded": false
 //     })
 // })() 
@@ -282,13 +299,13 @@ export const handler = async (event, context) => {
 
 
 
-// {
-//     "sheetid": "",
-//     "tab": "01/11/2024",
-//     "message": "This is a test"
-// }
+// // {
+// //     "sheetid": "",
+// //     "tab": "01/11/2024",
+// //     "message": "This is a test"
+// // }
 
-//https://ytzivrzj76ejwc2vdbnzwladdm0nvubi.lambda-url.us-east-1.on.aws/
+// //https://ytzivrzj76ejwc2vdbnzwladdm0nvubi.lambda-url.us-east-1.on.aws/
 
 
 
