@@ -13,7 +13,6 @@ const globals = {
     ROWOFFSET: 1,
     GPT_URL: 'https://ucifn4aomvs4e73k74czkybtiq0urbpr.lambda-url.us-east-1.on.aws',//'https://api.openai.com/v1/chat/completions'
     GPT_MODEL: `gpt-4-0125-preview`, //https://platform.openai.com/docs/models/continuous-model-upgrades
-
 };
 
 ////////////////////////////////////////////////////////////////
@@ -213,6 +212,7 @@ export const handler = async (event, context) => {
     let columnShift             = headersArray.indexOf('Shift');
     let columnCrawled           = headersArray.indexOf('Crawled');
     let columnLastCrawled       = headersArray.indexOf('Last Crawled');
+    let columnAttempts          = headersArray.indexOf('Attempts');
 
     let rowIndex = getRowIndex(rawMatrix, phoneNumber, columnAPContactNumber)
 
