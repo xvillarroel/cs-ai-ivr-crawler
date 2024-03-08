@@ -167,7 +167,7 @@ export const handler = async (event, context) => {
 
     let response;
 
-    console.log('*********** LOADING V2 ***********')
+    console.log('*********** LOADING V2.0 ***********')
     console.log(JSON.stringify(event,null,2));
     console.log('*************************************')
 
